@@ -1,22 +1,21 @@
 use core::fmt;
 
-#[derive(PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq)]
 struct GameState {
-    grid: [[i8; 10]; 10],
+    dim: (usize, usize),
+    grid: Vec<Vec<bool>>,
 }
 
 impl fmt::Display for GameState {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut fmt_str = String::new();
 
-        for line in self.grid {
+        for line in &self.grid {
             for cell in line {
-                if cell == 1 {
+                if *cell {
                     fmt_str.push_str("■");
-                } else if cell == 0 {
-                    fmt_str.push_str("□");
                 } else {
-                    panic!("Cell's value should be either 0 or 1.");
+                    fmt_str.push_str("□");
                 }
             }
             fmt_str.push_str("\n");
@@ -28,17 +27,12 @@ impl fmt::Display for GameState {
 
 impl GameState {
     fn next_state(&self) -> (GameState, bool) {
-        let dimensions = (self.grid.len(), self.grid[0].len());
+        let mut next_state = GameState::new_empty(self.dim);
 
-        // Make sure to use dimensions.0 and .1 instead of hardcoding when switching to other structures
-        let mut next_state = GameState {
-            grid: [[0; 10]; 10],
-        };
-
-        for i in 0..(dimensions.0) {
-            for j in 0..(dimensions.1) {
+        for i in 0..(self.dim.0) {
+            for j in 0..(self.dim.1) {
                 if self.is_cell_alive(i, j) {
-                    next_state.grid[i][j] = 1;
+                    next_state.grid[i][j] = true;
                 }
             }
         }
@@ -49,9 +43,7 @@ impl GameState {
     }
 
     fn is_cell_alive(&self, i: usize, j: usize) -> bool {
-        let dimensions = (self.grid.len(), self.grid[0].len());
-
-        let mut neighbors: Vec<i8> = Vec::new();
+        let mut neighbors: Vec<bool> = Vec::new();
 
         {
             let i = i as isize;
@@ -61,9 +53,9 @@ impl GameState {
                 for l in [j - 1, j, j + 1] {
                     if ((k, l) != (i, j))
                         & (k >= 0)
-                        & (k as usize <= dimensions.0 - 1)
+                        & (k as usize <= self.dim.0 - 1)
                         & (l >= 0)
-                        & (l as usize <= dimensions.1 - 1)
+                        & (l as usize <= self.dim.1 - 1)
                     {
                         neighbors.push(self.grid[k as usize][l as usize]);
                     }
@@ -71,24 +63,33 @@ impl GameState {
             }
         }
 
-        return ((self.grid[i][j] == 1) & (neighbors.iter().sum::<i8>() == 2))
-            | (neighbors.iter().sum::<i8>() == 3);
+        let alive_neighbors = neighbors.iter().filter(|&c| *c).count();
+
+        ((self.grid[i][j]) & (alive_neighbors == 2)) | (alive_neighbors == 3)
+    }
+
+    fn new_empty(dim: (usize, usize)) -> GameState {
+        GameState {
+            dim,
+            grid: vec![vec![false; dim.0]; dim.1],
+        }
     }
 }
 
 pub fn run() {
     let mut state = GameState {
-        grid: [
-            [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 1, 1, 0],
-            [0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
-            [0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+        dim: (10, 10),
+        grid: vec![
+            vec![false, false, false, false, false, false, false, false, false, false,],
+            vec![false, false, false, false, false, false, false, false, false, false,],
+            vec![false, false, false, false, false, false, false, false, false, false,],
+            vec![false, false, false, false, false, false, false, false, false, false,],
+            vec![false, false, false, false, false, false, false, false, false, false,],
+            vec![false, false, false, false, false, false, false, false, false, false,],
+            vec![false, false, false, false, false, false, false, false, false, false,],
+            vec![false, false, false, false, false, false, false, true, true, false,],
+            vec![false, false, false, false, false, false, false, true, false, true,],
+            vec![false, false, false, false, false, false, false, true, false, false,],
         ],
     };
 

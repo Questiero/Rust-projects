@@ -8,13 +8,12 @@ Implementation of the file import system will be done at a later time.
 
 ## TODO
 - Load initial state from file.
-- Dynamic infinite space (and, if not possible, at least restructurate the code so the grid can have customizable dimensions).
-- Possibility to exit without Ctrl-C.
+- Dynamic infinite space ?
+- Possibility to exit, choose the speed, pause go step by step in the UI.
 - GUI ?
 
 ## Review
 - Still some typing shenanigans...
-- Not a fan of using ``u8`` for cells when a ``bool`` will be enough, but if the states are hardcoded it's easier to read for the user. I should switch it when I make the state loadable from a file.
 - The ``print!("\x1B[2J\x1b[1;1H");`` to clear the console doesn't look great to me.
 - My way to look for neighors feels hacky and can probably be optimized.
 - Hardcoding ■ and □ doesn't feel right either.
