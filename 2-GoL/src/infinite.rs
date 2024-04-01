@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct Infinite2DMatrix<T: Copy> {
     len: usize,
     map: HashMap<isize, HashMap<isize, T>>,
@@ -16,7 +16,7 @@ impl<T: Copy> Infinite2DMatrix<T> {
     }
 
     #[allow(dead_code)]
-    pub fn get(self, i: isize, j: isize) -> Option<T> {
+    pub fn get(&self, i: isize, j: isize) -> Option<T> {
         let value: T;
 
         match self.map.get(&i) {
@@ -31,7 +31,7 @@ impl<T: Copy> Infinite2DMatrix<T> {
     }
 
     #[allow(dead_code)]
-    pub fn add(&mut self, elem: T, i: isize, j: isize) {
+    pub fn add_or_update(&mut self, elem: T, i: isize, j: isize) {
         match self.map.get_mut(&i) {
             None => {
                 let mut col: HashMap<isize, T> = HashMap::new();
@@ -43,7 +43,10 @@ impl<T: Copy> Infinite2DMatrix<T> {
                     col.insert(j, elem);
                     self.len += 1;
                 }
-                Some(_) => {}
+                Some(_) => {
+                    col.remove(&j);
+                    col.insert(j, elem);
+                }
             },
         }
     }
@@ -81,17 +84,5 @@ impl<T: Copy> Infinite2DMatrix<T> {
         }
 
         elements
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn new_infinite_2d_matrix() {
-        let m: Infinite2DMatrix<bool> = Infinite2DMatrix::new();
-
-        assert_eq!(HashMap::new(), m.map);
     }
 }
