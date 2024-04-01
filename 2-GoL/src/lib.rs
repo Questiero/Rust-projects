@@ -1,4 +1,7 @@
+mod infinite;
+
 use core::fmt;
+use infinite::Infinite2DMatrix;
 
 #[derive(Debug, PartialEq, Eq)]
 struct GameState {
@@ -13,12 +16,12 @@ impl fmt::Display for GameState {
         for line in &self.grid {
             for cell in line {
                 if *cell {
-                    fmt_str.push_str("■");
+                    fmt_str.push('■');
                 } else {
-                    fmt_str.push_str("□");
+                    fmt_str.push('□');
                 }
             }
-            fmt_str.push_str("\n");
+            fmt_str.push('\n');
         }
 
         write!(f, "{fmt_str}")
@@ -53,9 +56,9 @@ impl GameState {
                 for l in [j - 1, j, j + 1] {
                     if ((k, l) != (i, j))
                         & (k >= 0)
-                        & (k as usize <= self.dim.0 - 1)
+                        & ((k as usize) < self.dim.0)
                         & (l >= 0)
-                        & (l as usize <= self.dim.1 - 1)
+                        & ((l as usize) < self.dim.1)
                     {
                         neighbors.push(self.grid[k as usize][l as usize]);
                     }
@@ -80,16 +83,36 @@ pub fn run() {
     let mut state = GameState {
         dim: (10, 10),
         grid: vec![
-            vec![false, false, false, false, false, false, false, false, false, false,],
-            vec![false, false, false, false, false, false, false, false, false, false,],
-            vec![false, false, false, false, false, false, false, false, false, false,],
-            vec![false, false, false, false, false, false, false, false, false, false,],
-            vec![false, false, false, false, false, false, false, false, false, false,],
-            vec![false, false, false, false, false, false, false, false, false, false,],
-            vec![false, false, false, false, false, false, false, false, false, false,],
-            vec![false, false, false, false, false, false, false, true, true, false,],
-            vec![false, false, false, false, false, false, false, true, false, true,],
-            vec![false, false, false, false, false, false, false, true, false, false,],
+            vec![
+                false, false, false, false, false, false, false, false, false, false,
+            ],
+            vec![
+                false, false, false, false, false, false, false, false, false, false,
+            ],
+            vec![
+                false, false, false, false, false, false, false, false, false, false,
+            ],
+            vec![
+                false, false, false, false, false, false, false, false, false, false,
+            ],
+            vec![
+                false, false, false, false, false, false, false, false, false, false,
+            ],
+            vec![
+                false, false, false, false, false, false, false, false, false, false,
+            ],
+            vec![
+                false, false, false, false, false, false, false, false, false, false,
+            ],
+            vec![
+                false, false, false, false, false, false, false, true, true, false,
+            ],
+            vec![
+                false, false, false, false, false, false, false, true, false, true,
+            ],
+            vec![
+                false, false, false, false, false, false, false, true, false, false,
+            ],
         ],
     };
 
