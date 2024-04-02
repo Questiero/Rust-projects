@@ -16,12 +16,12 @@ impl<T: Copy> Infinite2DMatrix<T> {
     }
 
     #[allow(dead_code)]
-    pub fn get(&self, i: isize, j: isize) -> Option<T> {
+    pub fn get(&self, i: &isize, j: &isize) -> Option<T> {
         let value: T;
 
-        match self.map.get(&i) {
+        match self.map.get(i) {
             None => return None,
-            Some(r) => match r.get(&j) {
+            Some(r) => match r.get(j) {
                 None => return None,
                 Some(c) => value = *c,
             },
@@ -52,15 +52,15 @@ impl<T: Copy> Infinite2DMatrix<T> {
     }
 
     #[allow(dead_code)]
-    pub fn remove(&mut self, i: isize, j: isize) {
+    pub fn remove(&mut self, i: &isize, j: &isize) {
         match self.map.get_mut(&i) {
             None => {}
-            Some(col) => match col.get(&j) {
+            Some(col) => match col.get(j) {
                 None => {}
                 Some(_) => {
-                    col.remove(&j);
+                    col.remove(j);
                     if col.is_empty() {
-                        self.map.remove(&i);
+                        self.map.remove(i);
                         self.len -= 1;
                     }
                 }
