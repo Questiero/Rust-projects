@@ -15,7 +15,6 @@ Implementation of the file import system will be done at a later time.
 - Still some typing shenanigans...
 - The ``print!("\x1B[2J\x1b[1;1H");`` to clear the console doesn't look great to me.
 - My way to look for neighors feels hacky and can probably be optimized.
-- Hardcoding ■ and □ doesn't feel right either.
 - The ``#[derive(PartialEq, Eq)]`` seems insanely useful, compared to other languages "Two objects are equals only if they are the exact same object" default rule.
 - The Infinite2DMatrix was really fun to make, I love the idea behind it. I'm sure it can easily be improved with more knowledge of Rust, tho (with Iterators and whatnot, making more useful methos available to the user and probably redefine the methods it currently has implemented too. At least, it works for what I want). Also, an ``HashMap<(isize, isize), T>`` is probably more efficient than a ``HashMap<isize, HashMap<isize, T>>``, although the search in the later is probably fastest. I can't tell if the time efficiency is worth the trade-off, though.
-- I don't really like how the terminal "cleaning" works; Also, flicker sucks.
+- Ratatui is alright, a bit confusing at first but I like it. I don't fully understand it yet tho, I should probably do another project with it from scratch to fully understand how it works.

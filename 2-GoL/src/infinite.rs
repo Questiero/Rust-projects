@@ -53,7 +53,7 @@ impl<T: Copy> Infinite2DMatrix<T> {
 
     #[allow(dead_code)]
     pub fn remove(&mut self, i: &isize, j: &isize) {
-        match self.map.get_mut(&i) {
+        match self.map.get_mut(i) {
             None => {}
             Some(col) => match col.get(j) {
                 None => {}
