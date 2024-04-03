@@ -25,8 +25,8 @@ pub fn run() -> io::Result<()> {
 struct App<'a> {
     tick_count: u64,
     marker: Marker,
-    instructions: Paragraph<'a>,
-    instructions_dim: (u16, u16),
+    commands: Paragraph<'a>,
+    commands_dim: (u16, u16),
     game_state: GameState,
     offset: (isize, isize),
 }
@@ -36,14 +36,14 @@ impl<'a> App<'a> {
         Self {
             tick_count: 0,
             marker: Marker::Block,
-            instructions: Paragraph::new("Q - Quit\nP - Pause\nArrows - Move\n").block(
+            commands: Paragraph::new("Q - Quit\nP - Pause\nU - Unpause\nN - Next frame\nArrows - Move\n").block(
                 Block::new()
-                    .title("Instructions")
+                    .title("Commands")
                     .borders(Borders::ALL)
                     .border_style(Style::default())
                     .style(Style::default()),
             ),
-            instructions_dim: (16, 5),
+            commands_dim: (17, 7),
             game_state: GameState::new_empty(),
             offset: (0, 0),
         }
@@ -54,15 +54,15 @@ impl<'a> App<'a> {
         let mut app = Self::new();
         let mut last_tick = Instant::now();
 
-        let tick_rate = Duration::from_millis(160);
+        let tick_rate = Duration::from_millis(16);
         let mut mut_tick_rate = tick_rate;
 
         // TODO File input/Drawing
         app.game_state.grid.add_or_update(true, 10, 9);
         app.game_state.grid.add_or_update(true, 10, 10);
         app.game_state.grid.add_or_update(true, 10, 11);
-        app.game_state.grid.add_or_update(true, 11, 9);
-        app.game_state.grid.add_or_update(true, 9, 10);
+        app.game_state.grid.add_or_update(true, 11, 10);
+        app.game_state.grid.add_or_update(true, 9, 9);
 
         loop {
             let _ = terminal.draw(|frame| app.ui(frame));
@@ -71,17 +71,13 @@ impl<'a> App<'a> {
                 if let Event::Key(key) = event::read()? {
                     match key.code {
                         KeyCode::Char('q') => break,
-                        KeyCode::Char('p') => {
-                            if mut_tick_rate == tick_rate {
-                                mut_tick_rate = Duration::from_secs(86400);
-                            } else {
-                                mut_tick_rate = tick_rate;
-                            }
-                        }
-                        KeyCode::Down => app.offset.0 += 1,
-                        KeyCode::Up => app.offset.0 -= 1,
-                        KeyCode::Right => app.offset.0 += 1,
+                        KeyCode::Char('p') => mut_tick_rate = Duration::from_secs(86400),
+                        KeyCode::Char('u') => mut_tick_rate = tick_rate,
+                        KeyCode::Char('n') => (app.game_state, _) = app.game_state.next_state(),
                         KeyCode::Left => app.offset.0 -= 1,
+                        KeyCode::Right => app.offset.0 += 1,
+                        KeyCode::Down => app.offset.1 -= 1,
+                        KeyCode::Up => app.offset.1 += 1,
                         _ => {}
                     }
                 }
@@ -118,13 +114,13 @@ impl<'a> App<'a> {
         );
 
         let instructions_rect = Rect {
-            x: frame_size.width - self.instructions_dim.0,
-            width: self.instructions_dim.0,
+            x: frame_size.width - self.commands_dim.0,
+            width: self.commands_dim.0,
             y: 0,
-            height: self.instructions_dim.1,
+            height: self.commands_dim.1,
         };
 
-        frame.render_widget(&self.instructions, instructions_rect);
+        frame.render_widget(&self.commands, instructions_rect);
     }
 
     fn gol_canvas(&self, area: Rect, elements: Vec<(isize, isize)>) -> impl Widget + '_ {

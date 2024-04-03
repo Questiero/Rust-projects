@@ -51,12 +51,12 @@ impl GameState {
     pub fn get_slice(&self, tl: (isize, isize), br: (isize, isize)) -> Vec<(isize, isize)> {
         let mut slice = Vec::new();
 
-        for i in tl.1..br.1 {
-            for j in tl.0..br.0 {
+        for i in tl.0..br.0 {
+            for j in tl.1..br.1 {
                 match self.grid.get(&i, &j) {
                     None => {}
                     Some(_) => {
-                        slice.push((i, j));
+                        slice.push((i-tl.0, j-tl.1));
                     }
                 }
             }
