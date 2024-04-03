@@ -6,9 +6,6 @@ To run, simply use ``cargo run``.
 
 Implementation of the file import system will be done at a later time.
 
-## TODO
-- Load initial state from file.
-
 ## Review
 - Still some typing shenanigans...
 - The ``print!("\x1B[2J\x1b[1;1H");`` to clear the console doesn't look great to me.
@@ -17,3 +14,4 @@ Implementation of the file import system will be done at a later time.
 - The Infinite2DMatrix was really fun to make, I love the idea behind it. I'm sure it can easily be improved with more knowledge of Rust, tho (with Iterators and whatnot, making more useful methos available to the user and probably redefine the methods it currently has implemented too. At least, it works for what I want). Also, an ``HashMap<(isize, isize), T>`` is probably more efficient than a ``HashMap<isize, HashMap<isize, T>>``, although the search in the later is probably fastest. I can't tell if the time efficiency is worth the trade-off, though.
 - Ratatui is alright, a bit confusing at first but I like it. I don't fully understand it yet tho, I should probably do another project with it from scratch to fully understand how it works.
 - Keyboard events are hard to handle with how fast they come, I should learn how to do it better.
+- The error handling for arguments can probably be better, but it works.

@@ -6,6 +6,7 @@ use game_state::GameState;
 use std::{
     io::{self, stdout, Stdout},
     time::{Duration, Instant},
+    fs,
 };
 
 use crossterm::{
@@ -18,8 +19,10 @@ use ratatui::{
     widgets::{canvas::*, *},
 };
 
-pub fn run() -> io::Result<()> {
-    App::run()
+pub fn run(file_path: &String) -> io::Result<()> {
+    let contents = fs::read_to_string(file_path)
+    .expect(&format!("Cannot read file {}", file_path));
+    App::run(contents)
 }
 
 struct App<'a> {
@@ -32,7 +35,7 @@ struct App<'a> {
 }
 
 impl<'a> App<'a> {
-    fn new() -> Self {
+    fn new(state: String) -> Self {
         Self {
             tick_count: 0,
             marker: Marker::Block,
@@ -44,25 +47,18 @@ impl<'a> App<'a> {
                     .style(Style::default()),
             ),
             commands_dim: (17, 7),
-            game_state: GameState::new_empty(),
+            game_state: GameState::new(state),
             offset: (0, 0),
         }
     }
 
-    pub fn run() -> io::Result<()> {
+    pub fn run(state: String) -> io::Result<()> {
         let mut terminal = init_terminal()?;
-        let mut app = Self::new();
+        let mut app = Self::new(state);
         let mut last_tick = Instant::now();
 
         let tick_rate = Duration::from_millis(16);
         let mut mut_tick_rate = tick_rate;
-
-        // TODO File input/Drawing
-        app.game_state.grid.add_or_update(true, 10, 9);
-        app.game_state.grid.add_or_update(true, 10, 10);
-        app.game_state.grid.add_or_update(true, 10, 11);
-        app.game_state.grid.add_or_update(true, 11, 10);
-        app.game_state.grid.add_or_update(true, 9, 9);
 
         loop {
             let _ = terminal.draw(|frame| app.ui(frame));

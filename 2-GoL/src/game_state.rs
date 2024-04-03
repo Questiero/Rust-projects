@@ -48,6 +48,13 @@ impl GameState {
     }
 
     #[allow(dead_code)]
+    pub fn new(state: String) -> GameState {
+        let mut gs = Self::new_empty();
+        gs.parse_state(state);
+        gs
+    }
+
+    #[allow(dead_code)]
     pub fn get_slice(&self, tl: (isize, isize), br: (isize, isize)) -> Vec<(isize, isize)> {
         let mut slice = Vec::new();
 
@@ -63,5 +70,18 @@ impl GameState {
         }
 
         slice
+    }
+
+    #[allow(dead_code)]
+    fn parse_state(&mut self, state: String) {
+
+        for (i, line) in state.lines().enumerate() {
+            for (j, char) in line.chars().enumerate() {
+                if char != '_' {
+                    self.grid.add_or_update(true, i as isize, j as isize);
+                }
+            }
+        }
+
     }
 }

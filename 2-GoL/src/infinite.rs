@@ -2,7 +2,6 @@ use std::collections::HashMap;
 
 #[derive(Debug, PartialEq, Eq)]
 pub struct Infinite2DMatrix<T: Copy> {
-    len: usize,
     map: HashMap<isize, HashMap<isize, T>>,
 }
 
@@ -10,7 +9,6 @@ impl<T: Copy> Infinite2DMatrix<T> {
     #[allow(dead_code)]
     pub fn new() -> Infinite2DMatrix<T> {
         Infinite2DMatrix {
-            len: 0,
             map: HashMap::new(),
         }
     }
@@ -41,7 +39,6 @@ impl<T: Copy> Infinite2DMatrix<T> {
             Some(col) => match col.get(&j) {
                 None => {
                     col.insert(j, elem);
-                    self.len += 1;
                 }
                 Some(_) => {
                     col.remove(&j);
@@ -61,16 +58,10 @@ impl<T: Copy> Infinite2DMatrix<T> {
                     col.remove(j);
                     if col.is_empty() {
                         self.map.remove(i);
-                        self.len -= 1;
                     }
                 }
             },
         }
-    }
-
-    #[allow(dead_code)]
-    pub fn len(&self) -> usize {
-        self.len
     }
 
     #[allow(dead_code)]
