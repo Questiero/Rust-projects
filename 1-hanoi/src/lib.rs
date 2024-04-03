@@ -103,12 +103,14 @@ fn solve(mut tower: Tower) {
         let src = swap_end_if_pair((m & (m - 1)) % 3);
         let tgt = swap_end_if_pair(((m | (m - 1)) + 1) % 3);
 
-        println!("{m} - Move disc from rod {src} to rod {tgt}");
+//        println!("{m} - Move disc from rod {src} to rod {tgt}");
         tower.move_disc(src, tgt);
-        println!("{}", tower);
+        //println!("{}", tower);
 
         m += 1;
     }
+
+    println!("{tower}");
 }
 
 // ===== tests =====

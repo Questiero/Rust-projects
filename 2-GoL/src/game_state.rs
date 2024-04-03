@@ -78,7 +78,7 @@ impl GameState {
         for (i, line) in state.lines().enumerate() {
             for (j, char) in line.chars().enumerate() {
                 if char != '_' {
-                    self.grid.add_or_update(true, i as isize, j as isize);
+                    self.grid.add_or_update(true, j as isize, i as isize);
                 }
             }
         }
