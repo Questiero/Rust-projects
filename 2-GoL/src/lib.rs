@@ -21,7 +21,7 @@ use ratatui::{
 
 pub fn run(file_path: &String) -> io::Result<()> {
     let contents = fs::read_to_string(file_path)
-    .expect(&format!("Cannot read file {}", file_path));
+    .unwrap_or_else(|_| panic!("Cannot read file {}", file_path));
     App::run(contents)
 }
 

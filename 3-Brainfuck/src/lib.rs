@@ -32,14 +32,16 @@ impl Stack {
         self.cells[self.pointer]
     }
 
-    fn current_cell_value(&self) -> u8 {
+    fn get_current_cell_value(&self) -> u8 {
         self.cells[self.pointer]
+    }
+
+    fn set_current_cell_value(&mut self, val: u8) {
+        self.cells[self.pointer] = val;
     }
 }
 
-pub fn interpret(str_instructions: String) {
-    println!("{}", str_instructions);
-
+pub fn interpret(str_instructions: &str) {
     let mut stack = Stack::new();
 
     let instructions: Vec<char> = str_instructions.chars().collect();
@@ -53,9 +55,16 @@ pub fn interpret(str_instructions: String) {
             '+' => stack.increment_cell(),
             '-' => stack.decrement_cell(),
             '.' => print!("{}", stack.get_cell_byte() as char),
-            ',' => panic!("',' not implemented."),
+            ',' => {
+                let mut input = String::new();
+                let _string = std::io::stdin()
+                    .read_line(&mut input)
+                    .expect("Failed to read line.");
+                let bytes = input.bytes().next().expect("No byte read.");
+                stack.set_current_cell_value(bytes);
+            }
             '[' => {
-                if stack.current_cell_value() == 0 {
+                if stack.get_current_cell_value() == 0 {
                     let partial_bracket_index = str_instructions[pointer..]
                         .find(']')
                         .expect("Matching ']' not found.");
@@ -64,7 +73,7 @@ pub fn interpret(str_instructions: String) {
                 }
             }
             ']' => {
-                if stack.current_cell_value() != 0 {
+                if stack.get_current_cell_value() != 0 {
                     let partial_string = str_instructions[..pointer]
                         .chars()
                         .rev()
